@@ -32,6 +32,11 @@ const Alerts = React.lazy(() => import('./views/Notifications/Alerts'));
 const Badges = React.lazy(() => import('./views/Notifications/Badges'));
 const Modals = React.lazy(() => import('./views/Notifications/Modals'));
 const Colors = React.lazy(() => import('./views/Theme/Colors'));
+const CompanyProfile = React.lazy(() => import('./containers/CompanyProfile'));
+const IssuerDashboard = React.lazy(() => import('./containers/IssuerDashboard'));
+const UserDashboard = React.lazy(() => import('./containers/UserDashboard'));
+const NewJob = React.lazy(() => import('./containers/NewJob'));
+const RequestForCert = React.lazy(() => import('./containers/RequestForCert'));
 const Typography = React.lazy(() => import('./views/Theme/Typography'));
 const Widgets = React.lazy(() => import('./views/Widgets/Widgets'));
 const Users = React.lazy(() => import('./views/Users/Users'));
@@ -41,6 +46,11 @@ const User = React.lazy(() => import('./views/Users/User'));
 const routes = [
   { path: '/', exact: true, name: 'Home', component: DefaultLayout },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
+  { path: '/company', name: 'Company', component: CompanyProfile },
+  { path: '/new-job', name: 'New Job', component: NewJob },
+  { path: '/issuer-dashboard', name: 'Issuer Dashboard', component: IssuerDashboard },
+  { path: '/user-dashboard', name: 'User Dashboard', component: UserDashboard },
+  { path: '/issuer-dashboard/request', name: 'Request For Certificate', component: RequestForCert },
   { path: '/theme', exact: true, name: 'Theme', component: Colors },
   { path: '/theme/colors', name: 'Colors', component: Colors },
   { path: '/theme/typography', name: 'Typography', component: Typography },

@@ -75,6 +75,8 @@ $ cd my-project
 
 # install app's dependencies
 $ npm install
+or
+$ yarn
 ```
 
 ## Create React App

@@ -32,11 +32,23 @@ class DefaultHeader extends Component {
           <NavItem className="px-3">
             <NavLink href="/">Dashboard</NavLink>
           </NavItem>
-          <NavItem className="px-3">
+          {/* <NavItem className="px-3">
             <Link to="/users">Users</Link>
+          </NavItem> */}
+          <NavItem className="px-3">
+            <NavLink href="#/new-job">New Job</NavLink>
           </NavItem>
           <NavItem className="px-3">
-            <NavLink href="#">Settings</NavLink>
+            <NavLink href="#/company">Company</NavLink>
+          </NavItem>
+          <NavItem className="px-3">
+            <NavLink href="#/issuer-dashboard">Issuer Dashboard</NavLink>
+          </NavItem>
+          <NavItem className="px-3">
+            <NavLink href="#/user-dashboard">User Dashboard</NavLink>
+          </NavItem>
+          <NavItem className="px-3">
+            <NavLink href="#/issuer-dashboard/request">Requested Certificate</NavLink>
           </NavItem>
         </Nav>
         <Nav className="ml-auto" navbar>

@@ -1,0 +1,6 @@
+{
+  "name": "IssuerDashboard",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./IssuerDashboard.js"
+}
