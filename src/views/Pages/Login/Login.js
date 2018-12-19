@@ -1,8 +1,28 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
-
+import axios from 'axios'
+import domRouter from 'react-router-dom'
 class Login extends Component {
+  constructor(prop) {
+    super(prop)
+
+    this.onClickLogin = this.onClickLogin.bind(this)
+    this.state = {
+      email: "",
+      password: ""
+    }
+  }
+  onClickLogin() {
+    axios.post('http://localhost:8080/api/user/signin', {email: this.state.email, password: this.state.password})
+        .then(res => {
+          console.log(res.data)
+          localStorage.setItem('user', JSON.stringify(res.data.user))
+          this.props.history.push('/dashboard')
+        })
+        .catch(err => console.log(err))
+  }
+
   render() {
     return (
       <div className="app flex-row align-items-center">
@@ -21,7 +41,11 @@ class Login extends Component {
                             <i className="icon-user"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input type="text" placeholder="Username" autoComplete="username" />
+                        <Input onChange = {(event) => {
+                          this.setState({
+                            email: event.target.value
+                          })
+                        }} type="text" placeholder="Username" autoComplete="username" />
                       </InputGroup>
                       <InputGroup className="mb-4">
                         <InputGroupAddon addonType="prepend">
@@ -29,11 +53,15 @@ class Login extends Component {
                             <i className="icon-lock"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input type="password" placeholder="Password" autoComplete="current-password" />
+                        <Input onChange = {(event) => {
+                          this.setState({
+                            password: event.target.value
+                          })
+                        }} type="password" placeholder="Password" autoComplete="current-password" />
                       </InputGroup>
                       <Row>
                         <Col xs="6">
-                          <Button color="primary" className="px-4">Login</Button>
+                          <Button onClick = {this.onClickLogin} color="primary" className="px-4">Login</Button>
                         </Col>
                         <Col xs="6" className="text-right">
                           <Button color="link" className="px-0">Forgot password?</Button>

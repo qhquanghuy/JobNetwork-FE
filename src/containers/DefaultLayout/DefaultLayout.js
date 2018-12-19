@@ -29,6 +29,7 @@ class DefaultLayout extends Component {
 
   signOut(e) {
     e.preventDefault()
+    localStorage.removeItem('user')
     this.props.history.push('/login')
   }
 
@@ -37,7 +38,7 @@ class DefaultLayout extends Component {
       <div className="app">
         <AppHeader fixed>
           <Suspense  fallback={this.loading()}>
-            <DefaultHeader onLogout={e=>this.signOut(e)}/>
+            <DefaultHeader onLogin = { () => this.props.history.push('/login') } onLogout={e=>this.signOut(e)}/>
           </Suspense>
         </AppHeader>
         <div className="app-body">

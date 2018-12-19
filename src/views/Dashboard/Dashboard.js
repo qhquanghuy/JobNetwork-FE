@@ -25,7 +25,7 @@ import {
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities';
 import styles from './styles.css';
-
+import axios from 'axios'
 class Dashboard extends Component {
   constructor(props) {
     super(props);
@@ -33,6 +33,7 @@ class Dashboard extends Component {
     this.toggle = this.toggle.bind(this);
     this.onRadioBtnClick = this.onRadioBtnClick.bind(this);
     this.state = {
+      user: JSON.parse(localStorage.getItem('user')),
       dropdownOpen: false,
       radioSelected: 2,
       jobs: []
@@ -41,41 +42,13 @@ class Dashboard extends Component {
 
   componentDidMount() {
     //should api call
-    const jobs = [
-      {
-        "id": 7,
-        "user_id": 21,
-        "quantity": 5,
-        "deadline": "2019-02-28T17:00:00.000Z",
-        "created_at": "2018-12-03T16:18:57.000Z",
-        "title": "iOS Developer",
-        "description": "experience: 2year+, salary:20m",
-        "applicants": null,
-        "rejected_applicants": null,
-        "accepted_applicants": null,
-        "location": "Ha noi",
-        "skills": "iOS|swift|mobile development",
-        "employerName": "joe chen"
-      },
-      {
-        "id": 6,
-        "user_id": 21,
-        "quantity": 10,
-        "deadline": "2019-01-31T17:00:00.000Z",
-        "created_at": "2018-12-03T03:30:49.000Z",
-        "title": "Nodejs Developer",
-        "description": "experience: 2year+, salary:20m",
-        "applicants": 1,
-        "rejected_applicants": null,
-        "accepted_applicants": null,
-        "location": "Ha noi",
-        "skills": "nodeJs|web development",
-        "employerName": "joe chen"
-      }
-    ]
-    this.setState({
-      jobs: jobs
-    })
+    axios.get('http://localhost:8080/api/jobs')
+      .then(response => {
+        console.log(response)
+        this.setState({
+          jobs: response.data.jobs
+        })
+      })
   }
   toggle() {
     this.setState({
@@ -91,8 +64,7 @@ class Dashboard extends Component {
 
   loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
 
-  render() {
-
+  render() { 
     return (
       <div className="animated fadeIn">
         <Row>
@@ -101,7 +73,7 @@ class Dashboard extends Component {
               <Label htmlFor="appendedInputButton">Looking for Issuer?</Label>
               <div className="controls">
                 <InputGroup>
-                  <Input id="appendedInputButton" size="16" type="text" placeholder="Enter issuer email"/>
+                  <Input id="appendedInputButton" size="16" type="text" placeholder="Enter issuer email" />
                   <InputGroupAddon addonType="append">
                     <Button color="secondary">Search!</Button>
                   </InputGroupAddon>
@@ -122,6 +94,7 @@ class Dashboard extends Component {
                     <th>Quantity</th>
                     <th className="text-center">Location</th>
                     <th>Description</th>
+                    <th>Prefer</th>
                     <th className="text-center">Applications</th>
                     <th>Action</th>
                   </tr>
@@ -140,29 +113,34 @@ class Dashboard extends Component {
                         {/* <div>job.employerName</div> */}
                         {/* <div className="small text-muted">
                           <span>New</span> | Registered: Jan 1, 2015 */}
-                      {/* </div> */}
+                        {/* </div> */}
                       </td>
                       <td className="text-center">
                         {job.title}
-                    </td>
+                      </td>
                       <td className="text-center">
                         {job.quantity}
-                    </td>
+                      </td>
                       <td className="text-center">
                         {job.location}
-                      {/* <i className="flag-icon flag-icon-us h4 mb-0" title="us" id="us"></i> */}
+                        {/* <i className="flag-icon flag-icon-us h4 mb-0" title="us" id="us"></i> */}
                       </td>
                       <td>
                         <div className={styles.descTruncate}>
-                        {job.description}
+                          {job.description}
                           {/* At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat. */}
-                      </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div className={styles.descTruncate}>
+                          {job.skills.split('|').join(", ")}
+                        </div>
                       </td>
                       <td className="text-center">
                         {job.applicants === null ? 0 : job.applicants}
-                    </td>
+                      </td>
                       <td>
-                        <Button block color="success">Apply</Button>
+                        <Button block color="success" disabled = {this.state.user === null}>Apply</Button>
                       </td>
                     </tr>
                   })
