@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Card, CardBody, CardFooter } from 'reactstrap';
+import { Card, CardBody, CardFooter, Button, CardHeader } from 'reactstrap';
 import classNames from 'classnames';
 import { mapToCssModules } from 'reactstrap/lib/utils';
 
@@ -43,13 +43,20 @@ class Widget02 extends Component {
 
     const blockIcon = function (icon) {
       const classes = classNames(icon, 'bg-' + card.color, padding.icon, 'font-2xl mr-3 float-left');
-      return (<i className={classes}></i>);
+      const data = icon
+      // console.log(data)
+      return (<img style={{width:48, height:48, float: "left"}} id='base64image'                 
+      src={data}/>)
+      // return (<i className={classes}></i>);
     };
 
     const cardFooter = function () {
       if (footer) {
         return (
           <CardFooter className="px-3 py-2">
+          {/* <div className="card-header-actions">
+            <Button block color="primary">Request This Certificate</Button>
+          </div> */}
             <a className="font-weight-bold font-xs btn-block text-muted" href={link}>
               {footer}
               <i className="fa fa-angle-right float-right font-lg"></i></a>
@@ -60,8 +67,19 @@ class Widget02 extends Component {
 
     return (
       <Card>
+        <CardHeader>
+
+        <div className="card-header-actions">
+              {/*eslint-disable-next-line*/}
+              <a href="#" className="card-header-action btn btn-setting"><i className="icon-settings"></i></a>
+              {/*eslint-disable-next-line*/}
+              <a className="card-header-action btn btn-close" onClick={this.toggleFade}><i className="icon-close"></i></a>
+            </div>
+        </CardHeader>
         <CardBody className={card.classes} {...attributes}>
           {blockIcon(card.icon)}
+          {/* <img src={card.icon}/> */}
+          {/* <img style='display:block; width:100px;height:100px; float-left' id='base64image' src={card.icon}/> */}
           <div className={lead.classes}>{header}</div>
           <div className="text-muted text-uppercase font-weight-bold font-xs">{mainText}</div>
         </CardBody>

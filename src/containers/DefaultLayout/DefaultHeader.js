@@ -21,20 +21,20 @@ class DefaultHeader extends Component {
 
     return (
       <React.Fragment>
-        <AppSidebarToggler className="d-lg-none" display="md" mobile />
-        <AppNavbarBrand
+        {/* <AppSidebarToggler className="d-lg-none" display="md" mobile /> */}
+        {/* <AppNavbarBrand
           full={{ src: logo, width: 89, height: 25, alt: 'CoreUI Logo' }}
           minimized={{ src: sygnet, width: 30, height: 30, alt: 'CoreUI Logo' }}
-        />
-        <AppSidebarToggler className="d-md-down-none" display="lg" />
-
+        /> */}
+        {/* <AppSidebarToggler className="d-md-down-none" display="lg" /> */}
+{/*
         <Nav className="d-md-down-none" navbar>
           <NavItem className="px-3">
             <NavLink href="/">Dashboard</NavLink>
           </NavItem>
-          {/* <NavItem className="px-3">
+          <NavItem className="px-3">
             <Link to="/users">Users</Link>
-          </NavItem> */}
+          </NavItem>
           <NavItem className="px-3">
             <NavLink href="#/new-job">New Job</NavLink>
           </NavItem>
@@ -50,20 +50,21 @@ class DefaultHeader extends Component {
           <NavItem className="px-3">
             <NavLink href="#/issuer-dashboard/request">Requested Certificate</NavLink>
           </NavItem>
-        </Nav>
+</Nav>*/}
         <Nav className="ml-auto" navbar>
           <NavItem className="d-md-down-none">
-            <NavLink href="#"><i className="icon-bell"></i><Badge pill color="danger">5</Badge></NavLink>
+            <NavLink href="#"><i className="icon-bell"></i></NavLink>
           </NavItem>
-          <NavItem className="d-md-down-none">
+          {/* <NavItem className="d-md-down-none">
             <NavLink href="#"><i className="icon-list"></i></NavLink>
           </NavItem>
           <NavItem className="d-md-down-none">
             <NavLink href="#"><i className="icon-location-pin"></i></NavLink>
-          </NavItem>
+          </NavItem> */}
           <AppHeaderDropdown direction="down">
             <DropdownToggle nav>
-              <img src={'../../assets/img/avatars/6.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
+              huy nguyen
+              {/* <img src={'../../assets/img/avatars/6.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" /> */}
             </DropdownToggle>
             <DropdownMenu right style={{ right: 'auto' }}>
               <DropdownItem header tag="div" className="text-center"><strong>Account</strong></DropdownItem>
