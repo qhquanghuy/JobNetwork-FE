@@ -45,13 +45,12 @@ class Dashboard extends Component {
   fetchJobs = () => {
     axios.get('http://localhost:8080/api/jobs')
       .then(response => {
-        console.log(response)
         this.setState({
           jobs: response.data.jobs
         })
       })
   }
-  
+
   componentDidMount() {
     this.fetchJobs()
   }
@@ -78,7 +77,15 @@ class Dashboard extends Component {
               <Label htmlFor="appendedInputButton">Looking for Issuer?</Label>
               <div className="controls">
                 <InputGroup>
-                  <Input id="appendedInputButton" size="16" type="text" placeholder="Enter issuer email" />
+                  <Input onChange={
+                    (event, newValue) => {
+                      const url = "http://localhost:8080/api/users/search/" + newValue
+                      axios.post(url)
+                        .then(res => {
+
+                        })
+                    }
+                  } id="appendedInputButton" size="16" type="text" placeholder="Enter issuer email" />
                   <InputGroupAddon addonType="append">
                     <Button color="secondary">Search!</Button>
                   </InputGroupAddon>
@@ -89,20 +96,25 @@ class Dashboard extends Component {
         </Row>
         <Row>
           <Col>
+
+          </Col>
+        </Row>
+        <Row>
+          <Col>
             <Card>
-            <Alert color="warning" hidden = {this.state.errorString === ""}>
-              <h4><i className="fa fa-warning"></i> Warning!</h4>
-              {this.state.errorString}
-              <p>
-              <Button onClick = {
-                () => {
-                  this.setState({
-                    errorString: ""
-                  })
-                }
-              }>Ok</Button>
-              </p>
-            </Alert>
+              <Alert color="warning" hidden={this.state.errorString === ""}>
+                <h4><i className="fa fa-warning"></i> Warning!</h4>
+                {this.state.errorString}
+                <p>
+                  <Button onClick={
+                    () => {
+                      this.setState({
+                        errorString: ""
+                      })
+                    }
+                  }>Ok</Button>
+                </p>
+              </Alert>
               <Table hover responsive className="table-outline mb-0 d-none d-sm-table">
                 <thead className="thead-light">
                   <tr>
@@ -119,7 +131,7 @@ class Dashboard extends Component {
                 </thead>
                 <tbody>
                   {this.state.jobs.map((job) => {
-                    return <tr>
+                    return <tr key = {job.id}>
 
                       <td>
                         {job.employerName}
@@ -148,21 +160,20 @@ class Dashboard extends Component {
                       </td>
                       <td>
                         <Button block color="success" disabled={this.state.user === null}
-                          onClick = {
+                          onClick={
                             () => {
-                              const url = "http://localhost:8080/api/user/jobs/" + job.id + "/apply" 
-                              console.log({authorization: "Bearer " + this.state.user.token})
-                              axios.post(url,{}, {
-                                headers: {authorization: "Bearer " + this.state.user.token}
+                              const url = "http://localhost:8080/api/user/jobs/" + job.id + "/apply"
+                              axios.post(url, {}, {
+                                headers: { authorization: "Bearer " + this.state.user.token }
                               })
-                              .then(() => {
-                                this.fetchJobs()
-                              })
-                              .catch(err => {
-                                this.setState({
-                                  errorString: "You applied this job before"
+                                .then(() => {
+                                  this.fetchJobs()
                                 })
-                              })
+                                .catch(err => {
+                                  this.setState({
+                                    errorString: "You applied this job before"
+                                  })
+                                })
 
                             }
                           }

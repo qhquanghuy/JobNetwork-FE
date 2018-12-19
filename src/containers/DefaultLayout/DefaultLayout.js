@@ -33,12 +33,26 @@ class DefaultLayout extends Component {
     this.props.history.push('/login')
   }
 
+  gotoProfile() {
+    const user = JSON.parse(localStorage.getItem('user'))
+    if (user) {
+      const role = user.info.role
+      if (role == 1) {
+
+      } else if (role == 2) {
+
+      } else {
+        
+      }
+    }
+  }
+
   render() {
     return (
       <div className="app">
         <AppHeader fixed>
           <Suspense  fallback={this.loading()}>
-            <DefaultHeader onLogin = { () => this.props.history.push('/login') } onLogout={e=>this.signOut(e)}/>
+            <DefaultHeader onClickProfile = {() => this.gotoProfile()} onLogin = { () => this.props.history.push('/login') } onLogout={e=>this.signOut(e)}/>
           </Suspense>
         </AppHeader>
         <div className="app-body">
