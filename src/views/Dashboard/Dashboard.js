@@ -21,6 +21,7 @@ import {
   Progress,
   Row,
   Table,
+  Alert
 } from 'reactstrap';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities';
@@ -29,19 +30,19 @@ import axios from 'axios'
 class Dashboard extends Component {
   constructor(props) {
     super(props);
-
+    this.fetchJobs = this.fetchJobs.bind(this);
     this.toggle = this.toggle.bind(this);
     this.onRadioBtnClick = this.onRadioBtnClick.bind(this);
     this.state = {
       user: JSON.parse(localStorage.getItem('user')),
       dropdownOpen: false,
       radioSelected: 2,
-      jobs: []
+      jobs: [],
+      errorString: ""
     };
   }
 
-  componentDidMount() {
-    //should api call
+  fetchJobs = () => {
     axios.get('http://localhost:8080/api/jobs')
       .then(response => {
         console.log(response)
@@ -49,6 +50,10 @@ class Dashboard extends Component {
           jobs: response.data.jobs
         })
       })
+  }
+  
+  componentDidMount() {
+    this.fetchJobs()
   }
   toggle() {
     this.setState({
@@ -64,7 +69,7 @@ class Dashboard extends Component {
 
   loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
 
-  render() { 
+  render() {
     return (
       <div className="animated fadeIn">
         <Row>
@@ -85,6 +90,19 @@ class Dashboard extends Component {
         <Row>
           <Col>
             <Card>
+            <Alert color="warning" hidden = {this.state.errorString === ""}>
+              <h4><i className="fa fa-warning"></i> Warning!</h4>
+              {this.state.errorString}
+              <p>
+              <Button onClick = {
+                () => {
+                  this.setState({
+                    errorString: ""
+                  })
+                }
+              }>Ok</Button>
+              </p>
+            </Alert>
               <Table hover responsive className="table-outline mb-0 d-none d-sm-table">
                 <thead className="thead-light">
                   <tr>
@@ -102,18 +120,9 @@ class Dashboard extends Component {
                 <tbody>
                   {this.state.jobs.map((job) => {
                     return <tr>
-                      {/* <td className="text-center">
-                      <div className="avatar">
-                        <img src={'assets/img/avatars/1.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
-                        <span className="avatar-status badge-success"></span>
-                      </div>
-                    </td> */}
+
                       <td>
                         {job.employerName}
-                        {/* <div>job.employerName</div> */}
-                        {/* <div className="small text-muted">
-                          <span>New</span> | Registered: Jan 1, 2015 */}
-                        {/* </div> */}
                       </td>
                       <td className="text-center">
                         {job.title}
@@ -123,12 +132,10 @@ class Dashboard extends Component {
                       </td>
                       <td className="text-center">
                         {job.location}
-                        {/* <i className="flag-icon flag-icon-us h4 mb-0" title="us" id="us"></i> */}
                       </td>
                       <td>
                         <div className={styles.descTruncate}>
                           {job.description}
-                          {/* At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat. */}
                         </div>
                       </td>
                       <td>
@@ -140,7 +147,26 @@ class Dashboard extends Component {
                         {job.applicants === null ? 0 : job.applicants}
                       </td>
                       <td>
-                        <Button block color="success" disabled = {this.state.user === null}>Apply</Button>
+                        <Button block color="success" disabled={this.state.user === null}
+                          onClick = {
+                            () => {
+                              const url = "http://localhost:8080/api/user/jobs/" + job.id + "/apply" 
+                              console.log({authorization: "Bearer " + this.state.user.token})
+                              axios.post(url,{}, {
+                                headers: {authorization: "Bearer " + this.state.user.token}
+                              })
+                              .then(() => {
+                                this.fetchJobs()
+                              })
+                              .catch(err => {
+                                this.setState({
+                                  errorString: "You applied this job before"
+                                })
+                              })
+
+                            }
+                          }
+                        >Apply</Button>
                       </td>
                     </tr>
                   })
