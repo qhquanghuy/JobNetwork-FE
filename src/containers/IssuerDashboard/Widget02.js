@@ -15,6 +15,7 @@ const propTypes = {
   children: PropTypes.node,
   className: PropTypes.string,
   cssModule: PropTypes.object,
+  isBelongWithLoggedInUser: PropTypes.bool
 };
 
 const defaultProps = {
@@ -24,11 +25,16 @@ const defaultProps = {
   color: 'primary',
   variant: '0',
   link: '#',
+  isBelongWithLoggedInUser: false
 };
 
 class Widget02 extends Component {
+  constructor(props) {
+    super(props)
+
+  }
   render() {
-    const { className, cssModule, header, mainText, icon, color, footer, link, children, variant, ...attributes } = this.props;
+    const { isBelongWithLoggedInUser, className, cssModule, header, mainText, icon, color, footer, link, children, variant, ...attributes } = this.props;
 
     // demo purposes only
     const padding = (variant === '0' ? { card: 'p-3', icon: 'p-3', lead: 'mt-2' } : (variant === '1' ? {
@@ -45,37 +51,48 @@ class Widget02 extends Component {
       const classes = classNames(icon, 'bg-' + card.color, padding.icon, 'font-2xl mr-3 float-left');
       const data = icon
       // console.log(data)
-      return (<img style={{width:48, height:48, float: "left"}} id='base64image'                 
-      src={data}/>)
+      return (<img style={{ width: 48, height: 48, float: "left" }} id='base64image'
+        src={data} />)
       // return (<i className={classes}></i>);
     };
 
+    const cardHeader = () => {
+      return <CardHeader hidden = {!isBelongWithLoggedInUser}>
+
+      _header = <div className="card-header-actions">
+        <a href="#" className="card-header-action btn btn-setting"><i className="icon-settings"></i></a>
+        <a className="card-header-action btn btn-close"><i className="icon-close"></i></a>
+      </div>
+    </CardHeader>
+    }
+
     const cardFooter = function () {
+      let _footer
+      console.log(isBelongWithLoggedInUser)
+      if (isBelongWithLoggedInUser) {
+        _footer = <a className="font-weight-bold font-xs btn-block text-muted" href={link}>
+          {footer}
+          <i className="fa fa-angle-right float-right font-lg"></i></a>
+      } else {
+        _footer = <div className="card-header-actions">
+          <Button block color="primary">Request This Certificate</Button>
+        </div>
+      }
       if (footer) {
         return (
           <CardFooter className="px-3 py-2">
-          {/* <div className="card-header-actions">
-            <Button block color="primary">Request This Certificate</Button>
-          </div> */}
-            <a className="font-weight-bold font-xs btn-block text-muted" href={link}>
-              {footer}
-              <i className="fa fa-angle-right float-right font-lg"></i></a>
+            {_footer}
           </CardFooter>
         );
       }
     };
 
+
+
     return (
       <Card>
-        <CardHeader>
+        {cardHeader()}
 
-        <div className="card-header-actions">
-              {/*eslint-disable-next-line*/}
-              <a href="#" className="card-header-action btn btn-setting"><i className="icon-settings"></i></a>
-              {/*eslint-disable-next-line*/}
-              <a className="card-header-action btn btn-close" onClick={this.toggleFade}><i className="icon-close"></i></a>
-            </div>
-        </CardHeader>
         <CardBody className={card.classes} {...attributes}>
           {blockIcon(card.icon)}
           {/* <img src={card.icon}/> */}

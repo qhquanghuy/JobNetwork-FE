@@ -1,26 +1,30 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Badge, DropdownItem, DropdownMenu, DropdownToggle, Nav, NavItem, NavLink, Button } from 'reactstrap';
+import { DropdownItem, DropdownMenu, DropdownToggle, Nav, NavItem, NavLink, Button } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-import { AppAsideToggler, AppHeaderDropdown, AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
-import logo from '../../assets/img/brand/logo.svg'
-import sygnet from '../../assets/img/brand/sygnet.svg'
+import { AppAsideToggler, AppHeaderDropdown } from '@coreui/react';
+
 
 const propTypes = {
   children: PropTypes.node,
+  userName: PropTypes.string
 };
 
-const defaultProps = {};
+const defaultProps = {
+  userName: ""
+};
 
 class DefaultHeader extends Component {
   render() {
-    const user = JSON.parse(localStorage.getItem('user'))
-    const title = user === null ? 'Login' : user.info.name
+    console.log("rerender")
+    const { userName } = this.props
+    console.log(this.props)
+    const isNotLoggedIn = userName === ""
+    const title = isNotLoggedIn ?'Login' : userName
 
     // eslint-disable-next-line
     const { children, ...attributes } = this.props;
-    const item = user === null ? <Button onClick = {
+    const item = isNotLoggedIn ? <Button color = "primary" onClick = {
       () => this.props.onLogin()
     }>Login</Button> : <AppHeaderDropdown direction="down">
     <DropdownToggle nav>

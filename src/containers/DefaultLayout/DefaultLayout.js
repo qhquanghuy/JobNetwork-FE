@@ -25,34 +25,49 @@ const DefaultHeader = React.lazy(() => import('./DefaultHeader'));
 
 class DefaultLayout extends Component {
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      user: JSON.parse(localStorage.getItem('user'))
+    }
+  }
+
   loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
 
   signOut(e) {
     e.preventDefault()
     localStorage.removeItem('user')
-    this.props.history.push('/login')
+    this.setState({
+      user: null
+    })
+    this.props.history.push("/")
   }
 
   gotoProfile() {
-    const user = JSON.parse(localStorage.getItem('user'))
+    const user = this.state.user
     if (user) {
       const role = user.info.role
       if (role == 1) {
-
+        this.props.history.push("/user-dashboard/" + user.info.id)
       } else if (role == 2) {
-
+        this.props.history.push("/company/")
       } else {
-        
+        this.props.history.push("/issuer-dashboard/" + user.info.id)
       }
     }
   }
 
   render() {
+    console.log("rerender")
+    let userName = ""
+    if (this.state.user) {
+      userName = this.state.user.info.name
+    }
     return (
       <div className="app">
         <AppHeader fixed>
           <Suspense  fallback={this.loading()}>
-            <DefaultHeader onClickProfile = {() => this.gotoProfile()} onLogin = { () => this.props.history.push('/login') } onLogout={e=>this.signOut(e)}/>
+            <DefaultHeader userName = {userName} onClickProfile = {() => this.gotoProfile()} onLogin = { () => this.props.history.push('/login') } onLogout={e=>this.signOut(e)}/>
           </Suspense>
         </AppHeader>
         <div className="app-body">
@@ -86,7 +101,6 @@ class DefaultLayout extends Component {
         </div>
         <AppFooter>
           <Suspense fallback={this.loading()}>
-            {/* <DefaultFooter /> */}
           </Suspense>
         </AppFooter>
       </div>

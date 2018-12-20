@@ -16,7 +16,6 @@ class Login extends Component {
   onClickLogin() {
     axios.post('http://localhost:8080/api/user/signin', {email: this.state.email, password: this.state.password})
         .then(res => {
-          console.log(res.data)
           localStorage.setItem('user', JSON.stringify(res.data.user))
           this.props.history.push('/dashboard')
         })

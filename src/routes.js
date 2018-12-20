@@ -50,7 +50,7 @@ const routes = [
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/company', name: 'Company', component: CompanyProfile },
   { path: '/new-job', name: 'New Job', component: NewJob },
-  { path: '/issuer-dashboard', name: 'Issuer Dashboard', component: IssuerDashboard },
+  { path: '/issuer-dashboard/:id', name: 'Issuer Dashboard', component: IssuerDashboard },
   { path: '/user-dashboard', name: 'User Dashboard', component: UserDashboard },
   { path: '/issuer-dashboard-request', name: 'Request For Certificate', component: RequestForCert },
   { path: '/theme', exact: true, name: 'Theme', component: Colors },
