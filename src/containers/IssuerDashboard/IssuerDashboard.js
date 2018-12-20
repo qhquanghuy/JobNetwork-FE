@@ -11,6 +11,7 @@ import axios from 'axios';
 class IssuerDashboard extends Component {
   constructor(props) {
     super(props);
+    this.onClickRequestMember = this.onClickRequestMember.bind(this)
     const user = JSON.parse(localStorage.getItem('user'))
     this.state = {
       user: user,
@@ -74,9 +75,23 @@ class IssuerDashboard extends Component {
       .catch(err => console.log(err))
 
   }
+
+  onClickRequestMember() {
+    axios.post("http://localhost:8080/api/user/member/request", {
+      issuerId: this.props.match.params.id
+    }, {
+      headers: { authorization: "Bearer " + this.state.user.token }
+    })
+      .then(res => {
+        const token = res.data.token
+        window.open(this.state.profile.webPage + "/signin/" + token, "_self")
+      })
+      .catch(err => console.log(err))
+  }
+
   render() {
     const shouldShowRequestMember = !this.state.isBelongWithLoggedInUser && this.state.user
-    const _header = this.state.isMember ? <Badge color="success" className="float-right">Member</Badge> : <Button block color="primary">Request Member</Button>
+    const _header = this.state.isMember ? <Badge color="success" className="float-right">Member</Badge> : <Button onClick = {this.onClickRequestMember} block color="primary">Request Member</Button>
     return (
       <div className="animated fadeIn">
         <div className="card">
