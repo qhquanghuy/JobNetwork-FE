@@ -31,10 +31,17 @@ class RequestForCert extends Component {
       .catch(err => console.log(err))
   }
 
-  onCheckBoxChanged() {
-    console.log(this.state)
-  }
+  onClickAccept() {
+    const acceptedRequests = this.state.statefulRequests.filter(req => req.isChecked)
+    axios.post("http://localhost:8080/api/issuer/certs/publish", {
 
+    }, {
+        headers: { authorization: "Bearer " + this.state.user.token }
+      })
+      .then(res => {
+      })
+      .catch(err => console.log(err))
+  }
 
   render() {
     return (
@@ -71,7 +78,6 @@ class RequestForCert extends Component {
                         <th>
                           <input onChange = {(event) => {
                             statefulRequest.isChecked = event.target.checked
-                            this.onCheckBoxChanged()
                           }} type="checkbox" value="" />
                         </th>
                         <td>{request.name}</td>
