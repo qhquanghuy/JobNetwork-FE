@@ -86,8 +86,8 @@ class IssuerDashboard extends Component {
     axios.post("http://localhost:8080/api/user/member/request", {
       issuerId: this.props.match.params.id
     }, {
-      headers: { authorization: "Bearer " + this.state.user.token }
-    })
+        headers: { authorization: "Bearer " + this.state.user.token }
+      })
       .then(res => {
         const token = res.data.token
         window.open(this.state.profile.webPage + "/signin/" + token, "_self")
@@ -96,11 +96,11 @@ class IssuerDashboard extends Component {
   }
   onClickRequestCert(cert) {
     const issuerId = this.props.match.params.id
-    axios.post("http://localhost:8080/api/user/certs/"+ cert.id +"/request", {
+    axios.post("http://localhost:8080/api/user/certs/" + cert.id + "/request", {
       issuerId: issuerId
     }, {
-      headers: { authorization: "Bearer " + this.state.user.token }
-    })
+        headers: { authorization: "Bearer " + this.state.user.token }
+      })
       .then(() => {
         this.fetchCerts(issuerId)
       })
@@ -116,18 +116,25 @@ class IssuerDashboard extends Component {
     }
   }
 
+  onClickSeeAll(cert) {
+    this.props.history.push({
+      pathname: "/issuer-dashboard-request/" + cert.id,
+      state: { cert: cert }
+    })
+  }
+
   render() {
     const shouldShowRequestMember = !this.state.isBelongWithLoggedInUser && this.state.user
-    const _header = this.state.isMember ? <Badge color="success" className="float-right">Member</Badge> : <Button onClick = {this.onClickRequestMember} block color="primary">Request Member</Button>
+    const _header = this.state.isMember ? <Badge color="success" className="float-right">Member</Badge> : <Button onClick={this.onClickRequestMember} block color="primary">Request Member</Button>
     return (
       <div className="animated fadeIn">
         <div className="card">
           <div className="card-header">
             Issuer Dashboard
             <div hidden={!shouldShowRequestMember} className="card-header-actions">
-              
+
               {_header}
-              
+
             </div>
           </div>
           <div className="card-body">
@@ -170,7 +177,7 @@ class IssuerDashboard extends Component {
                           // return <img src={img}/>
                           return <Row>
                             <Col xs="12" sm="6" lg="8">
-                              <Widget02 onClickRequestCert = { () => this.onClickRequestCert(cert)} isBelongWithLoggedInUser={this.state.isBelongWithLoggedInUser} header={cert.title} link = {"#/issuer-dashboard-request/" + cert.id} mainText={cert.description} icon={img} color="primary" variant="1" footer={ this.footerFor(cert) } />
+                              <Widget02 onClickRequestCert={() => this.onClickRequestCert(cert)} isBelongWithLoggedInUser={this.state.isBelongWithLoggedInUser} header={cert.title} mainText={cert.description} icon={img} color="primary" variant="1" footer={this.footerFor(cert)} onClickSeeAll={() => this.onClickSeeAll(cert)} />
                             </Col>
                           </Row>
                         })}

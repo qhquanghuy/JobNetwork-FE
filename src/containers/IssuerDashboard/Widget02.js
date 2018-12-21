@@ -34,7 +34,7 @@ class Widget02 extends Component {
 
   }
   render() {
-    const { onClickRequestCert , isBelongWithLoggedInUser, className, cssModule, header, mainText, icon, color, footer, link, children, variant, ...attributes } = this.props;
+    const { onClickSeeAll, onClickRequestCert , isBelongWithLoggedInUser, className, cssModule, header, mainText, icon, color, footer, link, children, variant, ...attributes } = this.props;
 
     // demo purposes only
     const padding = (variant === '0' ? { card: 'p-3', icon: 'p-3', lead: 'mt-2' } : (variant === '1' ? {
@@ -68,11 +68,10 @@ class Widget02 extends Component {
 
     const cardFooter = function () {
       let _footer
-      console.log(isBelongWithLoggedInUser)
       if (isBelongWithLoggedInUser) {
-        _footer = <a className="font-weight-bold font-xs btn-block text-muted" href={link}>
+        _footer = <Button onClick = {onClickSeeAll} className="font-weight-bold font-xs btn-block text-muted">
           {footer}
-          <i className="fa fa-angle-right float-right font-lg"></i></a>
+          <i className="fa fa-angle-right float-right font-lg"></i></Button>
       } else {
         _footer = <div className="card-header-actions">
           <Button onClick = {onClickRequestCert} block color="primary">Request This Certificate</Button>
