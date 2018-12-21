@@ -1,38 +1,29 @@
 import React, { Component } from 'react';
-import { Row, Col, CardBody, FormGroup, Label,
-  Input,
-  Badge, Card, CardHeader, Button, Pagination, PaginationItem, PaginationLink, Table
-} from 'reactstrap'
+import { CardBody, Table } from 'reactstrap'
 
+import axios from 'axios'
 
 class RequestForCert extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      user: JSON.parse(localStorage.getItem('user')),
       requests: []
     }
   }
 
   componentDidMount() { 
-    const requests = [
-      {
-          "id": 20,
-          "email": "qhquanghuy96@gmail.com",
-          "name": "huy nguyen",
-          "eth_address": null,
-          "trusted_by_system_at": null,
-          "created_at": "2018-12-04T02:37:25.000Z",
-          "description": null,
-          "role": 1,
-          "last_time_open_notification": null,
-          "status": "approved",
-          "issuer_system_identifier": "B14DCCN069"
-      }
-    ]
-    this.setState({
-      requests: requests
-    })
+    const id = this.props.match.params.id
+    axios.get("http://localhost:8080/api/issuer/certs/" + id + "/requests", {
+        headers: { authorization: "Bearer " + this.state.user.token }
+      })
+        .then(res => {
+          this.setState({
+            requests: res.data.requests
+          })
+        })
+        .catch(err => console.log(err))
   }
 
 

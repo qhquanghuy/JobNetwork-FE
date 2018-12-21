@@ -12,6 +12,7 @@ class IssuerDashboard extends Component {
   constructor(props) {
     super(props);
     this.onClickRequestMember = this.onClickRequestMember.bind(this)
+    this.onClickRequestCert = this.onClickRequestCert.bind(this)
     const user = JSON.parse(localStorage.getItem('user'))
     this.state = {
       user: user,
@@ -47,8 +48,6 @@ class IssuerDashboard extends Component {
         headers: { authorization: "Bearer " + this.state.user.token }
       })
         .then(res => {
-          console.log("aldjksflkadjsfklajsdflkjadfklsj")
-          console.log(res)
           this.setState({
             isMember: true
           })
@@ -66,14 +65,21 @@ class IssuerDashboard extends Component {
       })
     }
 
-    axios.get("http://localhost:8080/api/issuers/" + id + "/certs")
+    this.fetchCerts(id)
+
+  }
+
+  fetchCerts(issuerId) {
+    const token = this.state.user ? this.state.user.token : ""
+    axios.get("http://localhost:8080/api/issuers/" + issuerId + "/certs", {
+      headers: { authorization: "Bearer " + token }
+    })
       .then(res => {
         this.setState({
           certs: res.data.certs
         })
       })
       .catch(err => console.log(err))
-
   }
 
   onClickRequestMember() {
@@ -87,6 +93,27 @@ class IssuerDashboard extends Component {
         window.open(this.state.profile.webPage + "/signin/" + token, "_self")
       })
       .catch(err => console.log(err))
+  }
+  onClickRequestCert(cert) {
+    const issuerId = this.props.match.params.id
+    axios.post("http://localhost:8080/api/user/certs/"+ cert.id +"/request", {
+      issuerId: issuerId
+    }, {
+      headers: { authorization: "Bearer " + this.state.user.token }
+    })
+      .then(() => {
+        this.fetchCerts(issuerId)
+      })
+      .catch(err => console.log(err))
+  }
+
+  footerFor(cert) {
+    console.log(cert)
+    if (this.state.user) {
+      return cert.isRequested == 0 ? "See all requests" : null
+    } else {
+      return null
+    }
   }
 
   render() {
@@ -143,8 +170,7 @@ class IssuerDashboard extends Component {
                           // return <img src={img}/>
                           return <Row>
                             <Col xs="12" sm="6" lg="8">
-                              <Widget02 isBelongWithLoggedInUser={this.state.isBelongWithLoggedInUser} header={cert.title} link="#/issuer-dashboard-request" mainText={cert.description} icon={img} color="primary" variant="1" footer="See all requests" />
-                              {/* <Widget02 header= {cert.title} link="#/issuer-dashboard-request" mainText= {cert.description} icon= {img} color="primary" variant="1"/> */}
+                              <Widget02 onClickRequestCert = { () => this.onClickRequestCert(cert)} isBelongWithLoggedInUser={this.state.isBelongWithLoggedInUser} header={cert.title} link = {"#/issuer-dashboard-request/" + cert.id} mainText={cert.description} icon={img} color="primary" variant="1" footer={ this.footerFor(cert) } />
                             </Col>
                           </Row>
                         })}

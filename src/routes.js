@@ -52,7 +52,7 @@ const routes = [
   { path: '/new-job', name: 'New Job', component: NewJob },
   { path: '/issuer-dashboard/:id', name: 'Issuer Dashboard', component: IssuerDashboard },
   { path: '/user-dashboard', name: 'User Dashboard', component: UserDashboard },
-  { path: '/issuer-dashboard-request', name: 'Request For Certificate', component: RequestForCert },
+  { path: '/issuer-dashboard-request/:id', name: 'Request For Certificate', component: RequestForCert },
   { path: '/theme', exact: true, name: 'Theme', component: Colors },
   { path: '/theme/colors', name: 'Colors', component: Colors },
   { path: '/theme/typography', name: 'Typography', component: Typography },

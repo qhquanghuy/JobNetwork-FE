@@ -34,7 +34,7 @@ class Widget02 extends Component {
 
   }
   render() {
-    const { isBelongWithLoggedInUser, className, cssModule, header, mainText, icon, color, footer, link, children, variant, ...attributes } = this.props;
+    const { onClickRequestCert , isBelongWithLoggedInUser, className, cssModule, header, mainText, icon, color, footer, link, children, variant, ...attributes } = this.props;
 
     // demo purposes only
     const padding = (variant === '0' ? { card: 'p-3', icon: 'p-3', lead: 'mt-2' } : (variant === '1' ? {
@@ -75,7 +75,7 @@ class Widget02 extends Component {
           <i className="fa fa-angle-right float-right font-lg"></i></a>
       } else {
         _footer = <div className="card-header-actions">
-          <Button block color="primary">Request This Certificate</Button>
+          <Button onClick = {onClickRequestCert} block color="primary">Request This Certificate</Button>
         </div>
       }
       if (footer) {
@@ -95,8 +95,6 @@ class Widget02 extends Component {
 
         <CardBody className={card.classes} {...attributes}>
           {blockIcon(card.icon)}
-          {/* <img src={card.icon}/> */}
-          {/* <img style='display:block; width:100px;height:100px; float-left' id='base64image' src={card.icon}/> */}
           <div className={lead.classes}>{header}</div>
           <div className="text-muted text-uppercase font-weight-bold font-xs">{mainText}</div>
         </CardBody>
