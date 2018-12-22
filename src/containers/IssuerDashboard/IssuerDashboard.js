@@ -90,7 +90,7 @@ class IssuerDashboard extends Component {
       })
       .then(res => {
         const token = res.data.token
-        window.open(this.state.profile.webPage + "/signin/" + token, "_self")
+        window.open('http://localhost:3001/signin/' + token, "_self")
       })
       .catch(err => console.log(err))
   }

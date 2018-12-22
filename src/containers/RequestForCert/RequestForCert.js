@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { CardBody, Table } from 'reactstrap'
+import { CardBody, Table, Button } from 'reactstrap'
 
 import axios from 'axios'
 
@@ -7,6 +7,7 @@ class RequestForCert extends Component {
 
   constructor(props) {
     super(props);
+    this.onClickAccept = this.onClickAccept.bind(this)
     this.state = {
       user: JSON.parse(localStorage.getItem('user')),
       statefulRequests: []
@@ -20,25 +21,63 @@ class RequestForCert extends Component {
     })
       .then(res => {
         this.setState({
-          statefulRequests: res.data.requests.map(request => {
-            return {
-              isChecked: false, 
-              request: request
+          statefulRequests: res.data.requests.reduce((acc, request) => {
+            console.log(request)
+            if (request.status === 'pending') {
+              const stateObj =  {
+                isChecked: false,
+                request: request
+              }
+              return acc.concat([stateObj])
             }
-          })
+            return acc          
+          }, [])
         })
       })
       .catch(err => console.log(err))
   }
 
   onClickAccept() {
+    const cert = this.props.location.state.cert
     const acceptedRequests = this.state.statefulRequests.filter(req => req.isChecked)
-    axios.post("http://localhost:8080/api/issuer/certs/publish", {
-
-    }, {
-        headers: { authorization: "Bearer " + this.state.user.token }
-      })
+    const certs = acceptedRequests.map(statefulRequest => {
+      return {
+        issuedOn: (new Date()).getTime(),
+        cert: {
+          id: cert.id,
+          title: cert.title,
+          description: cert.description,
+          icon: cert.badge_icon,
+          createdAt: cert.created_at
+        },
+        issuer: {
+          id: this.state.user.info.id,
+          email: this.state.user.info.email,
+          name: this.state.user.info.name,
+          webPage: this.state.user.info.webPage,
+          address: this.state.user.info.webPage + "/eth/address",
+          revocationList: this.state.user.info.webPage + "/eth/revoked"
+        },
+        recipientProfile: {
+          id: statefulRequest.request.id,
+          email: statefulRequest.request.email,
+          name: statefulRequest.request.name
+        }
+      }
+    })
+    const body = {
+      certs: certs
+    }
+    axios.post("http://localhost:8080/api/issuer/certs/publish", body, {
+      headers: { authorization: "Bearer " + this.state.user.token }
+    })
       .then(res => {
+        console.log(res)
+        this.setState({
+          statefulRequests: this.state.statefulRequests.filter(req => { 
+            return !acceptedRequests.includes(req)
+          })
+        })
       })
       .catch(err => console.log(err))
   }
@@ -51,9 +90,9 @@ class RequestForCert extends Component {
             Request for Certificate
             <div className="card-header-actions">
               {/*eslint-disable-next-line*/}
-              <a onClick href="#" className="card-header-action btn btn-warning">Accept</a>
+              <Button onClick={this.onClickAccept} className="card-header-action btn btn-warning">Accept</Button>
               {/*eslint-disable-next-line*/}
-              <a className="card-header-action btn btn-danger" data-target="#collapseExample" onClick={this.toggle}>Reject</a>
+              <Button className="card-header-action btn btn-danger" data-target="#collapseExample" onClick={this.toggle}>Reject</Button>
               {/*eslint-disable-next-line*/}
             </div>
           </div>
@@ -76,7 +115,7 @@ class RequestForCert extends Component {
                       const request = statefulRequest.request
                       return <tr>
                         <th>
-                          <input onChange = {(event) => {
+                          <input onChange={(event) => {
                             statefulRequest.isChecked = event.target.checked
                           }} type="checkbox" value="" />
                         </th>
