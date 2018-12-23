@@ -24,13 +24,13 @@ class RequestForCert extends Component {
           statefulRequests: res.data.requests.reduce((acc, request) => {
             console.log(request)
             if (request.status === 'pending') {
-              const stateObj =  {
+              const stateObj = {
                 isChecked: false,
                 request: request
               }
               return acc.concat([stateObj])
             }
-            return acc          
+            return acc
           }, [])
         })
       })
@@ -38,43 +38,54 @@ class RequestForCert extends Component {
   }
 
   onClickAccept() {
-    const cert = this.props.location.state.cert
     const acceptedRequests = this.state.statefulRequests.filter(req => req.isChecked)
-    const certs = acceptedRequests.map(statefulRequest => {
-      return {
-        issuedOn: (new Date()).getTime(),
-        cert: {
-          id: cert.id,
-          title: cert.title,
-          description: cert.description,
-          icon: cert.badge_icon,
-          createdAt: cert.created_at
-        },
-        issuer: {
-          id: this.state.user.info.id,
-          email: this.state.user.info.email,
-          name: this.state.user.info.name,
-          webPage: this.state.user.info.webPage,
-          address: this.state.user.info.webPage + "/eth/address",
-          revocationList: this.state.user.info.webPage + "/eth/revoked"
-        },
-        recipientProfile: {
-          id: statefulRequest.request.id,
-          email: statefulRequest.request.email,
-          name: statefulRequest.request.name
+    axios.get(this.state.user.info.webPage + "/eth/address")
+      .then(res => res.data.addresses)
+      .then(addresses => {
+        return addresses[0].ethAddress
+      })
+      .then(address => {
+        const cert = this.props.location.state.cert
+        const certs = acceptedRequests.map(statefulRequest => {
+          return {
+            issuedOn: (new Date()).getTime(),
+            cert: {
+              id: cert.id,
+              title: cert.title,
+              description: cert.description,
+              icon: cert.badge_icon,
+              createdAt: cert.created_at
+            },
+            issuer: {
+              id: this.state.user.info.id,
+              email: this.state.user.info.email,
+              name: this.state.user.info.name,
+              webPage: this.state.user.info.webPage,
+              address: address,
+              revocationList: this.state.user.info.webPage + "/eth/revoked"
+            },
+            recipientProfile: {
+              id: statefulRequest.request.id,
+              email: statefulRequest.request.email,
+              name: statefulRequest.request.name
+            }
+          }
+        })
+        const body = {
+          certs: certs
         }
-      }
-    })
-    const body = {
-      certs: certs
-    }
-    axios.post("http://localhost:8080/api/issuer/certs/publish", body, {
-      headers: { authorization: "Bearer " + this.state.user.token }
-    })
+        return body
+      })
+      .then(body => {
+        console.log(body)
+        return axios.post("http://localhost:8080/api/issuer/certs/publish", body, {
+          headers: { authorization: "Bearer " + this.state.user.token }
+        })
+      })    
       .then(res => {
         console.log(res)
         this.setState({
-          statefulRequests: this.state.statefulRequests.filter(req => { 
+          statefulRequests: this.state.statefulRequests.filter(req => {
             return !acceptedRequests.includes(req)
           })
         })

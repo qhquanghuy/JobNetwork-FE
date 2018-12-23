@@ -36,9 +36,6 @@ class IssuerDashboard extends Component {
 
   componentDidMount() {
     const id = this.props.match.params.id
-
-
-
     if (!this.state.user) {
       this.loadIssuerProfile(id, () => { })
     }
